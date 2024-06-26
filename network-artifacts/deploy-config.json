@@ -1,8 +1,8 @@
 {
-  "l1StartingBlockTag": "0x825e69edbe71fd98691a63b6a9810b7beb692aa2ab6e1a62a3bb2390eb2c47ee",
+  "l1StartingBlockTag": "0x2722f20d22234112fb90ce2180135e960054678ef0b5af1ea94359f49c265c52",
 
   "l1ChainID": 11155111,
-  "l2ChainID": 42069,
+  "l2ChainID": 13694512,
   "l2BlockTime": 2,
   "l1BlockTime": 12,
 
@@ -16,19 +16,19 @@
 
   "l2OutputOracleSubmissionInterval": 120,
   "l2OutputOracleStartingBlockNumber": 0,
-  "l2OutputOracleStartingTimestamp": 1719269472,
+  "l2OutputOracleStartingTimestamp": 1719410016,
 
   "l2OutputOracleProposer": "0xb119F727C963886cE97BCA833090F854F7654848",
-  "l2OutputOracleChallenger": "0x530FE24D7Bb68C359325BDc8360B616Db99E31d9",
+  "l2OutputOracleChallenger": "0xF1382DaB7DD25A0a1A993a871fb61041F9daf107",
 
   "finalizationPeriodSeconds": 12,
 
-  "proxyAdminOwner": "0x530FE24D7Bb68C359325BDc8360B616Db99E31d9",
-  "baseFeeVaultRecipient": "0x530FE24D7Bb68C359325BDc8360B616Db99E31d9",
-  "l1FeeVaultRecipient": "0x530FE24D7Bb68C359325BDc8360B616Db99E31d9",
-  "sequencerFeeVaultRecipient": "0x530FE24D7Bb68C359325BDc8360B616Db99E31d9",
-  "finalSystemOwner": "0x530FE24D7Bb68C359325BDc8360B616Db99E31d9",
-  "superchainConfigGuardian": "0x530FE24D7Bb68C359325BDc8360B616Db99E31d9",
+  "proxyAdminOwner": "0xF1382DaB7DD25A0a1A993a871fb61041F9daf107",
+  "baseFeeVaultRecipient": "0xF1382DaB7DD25A0a1A993a871fb61041F9daf107",
+  "l1FeeVaultRecipient": "0xF1382DaB7DD25A0a1A993a871fb61041F9daf107",
+  "sequencerFeeVaultRecipient": "0xF1382DaB7DD25A0a1A993a871fb61041F9daf107",
+  "finalSystemOwner": "0xF1382DaB7DD25A0a1A993a871fb61041F9daf107",
+  "superchainConfigGuardian": "0xF1382DaB7DD25A0a1A993a871fb61041F9daf107",
 
   "baseFeeVaultMinimumWithdrawalAmount": "0x8ac7230489e80000",
   "l1FeeVaultMinimumWithdrawalAmount": "0x8ac7230489e80000",
@@ -43,7 +43,7 @@
   "enableGovernance": true,
   "governanceTokenSymbol": "OP",
   "governanceTokenName": "Optimism",
-  "governanceTokenOwner": "0x530FE24D7Bb68C359325BDc8360B616Db99E31d9",
+  "governanceTokenOwner": "0xF1382DaB7DD25A0a1A993a871fb61041F9daf107",
 
   "l2GenesisBlockGasLimit": "0x1c9c380",
   "l2GenesisBlockBaseFeePerGas": "0x3b9aca00",
@@ -73,6 +73,8 @@
 
   "preimageOracleMinProposalSize": 1800000,
   "preimageOracleChallengePeriod": 86400,
+  
   "useCustomGasToken": true,
   "customGasTokenAddress": "0xe11e87ab28920d8291b71dab970644041a054da9"
+
 }
