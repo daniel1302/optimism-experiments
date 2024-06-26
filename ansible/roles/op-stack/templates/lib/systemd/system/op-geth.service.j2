@@ -1,0 +1,44 @@
+[Unit]
+Description=Op Geth
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=360
+Restart=always
+ExecStartPre=-/usr/bin/docker stop --time=300 op-geth
+ExecStartPre=-/usr/bin/docker rm op-geth
+ExecStartPre=/usr/bin/docker pull us-docker.pkg.dev/oplabs-tools-artifacts/images/op-geth:{{- op_stack_op_geth_version }}
+ExecStart=/usr/bin/docker run \
+    --name op-geth \
+    --rm \
+    --network host \
+    -v /mnt/geth-data:/datadir \
+    -v /home/op-stack/jwt.txt:/jwt.txt \
+    us-docker.pkg.dev/oplabs-tools-artifacts/images/op-geth:{{- op_stack_op_geth_version }} \
+        --datadir /datadir \
+        --http \
+        --http.corsdomain="*" \
+        --http.vhosts="*" \
+        --http.addr=0.0.0.0 \
+        --http.api=web3,debug,eth,txpool,net,engine \
+        --ws \
+        --ws.addr=0.0.0.0 \
+        --ws.port=8546 \
+        --ws.origins="*" \
+        --ws.api=debug,eth,txpool,net,engine \
+        --syncmode=full \
+        --gcmode=archive \
+        --nodiscover \
+        --maxpeers=0 \
+        --networkid=42069 \
+        --authrpc.vhosts="*" \
+        --authrpc.addr=0.0.0.0 \
+        --authrpc.port=8551 \
+        --gcmode=archive \
+        --authrpc.jwtsecret=/jwt.txt \
+        --rollup.disabletxpoolgossip=true
+
+
+[Install]
+WantedBy=multi-user.target

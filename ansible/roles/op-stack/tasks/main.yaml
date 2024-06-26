@@ -1,0 +1,111 @@
+---
+- name: Add the 'op-stack' group
+  ansible.builtin.group:
+    name: op-stack
+    state: present
+
+- name: Add the 'op-stack' user
+  ansible.builtin.user:
+    name: op-stack
+    shell: /bin/bash
+    groups: op-stack, sudo, docker
+
+- name: Check if /mnt/geth-data exists
+  ansible.builtin.stat:
+    path: "/mnt/geth-data"
+  register: geth_datadir_mounted
+
+- name: Add geth data dir if not externally mounted
+  ansible.builtin.file:
+    path: "/mnt/geth-data"
+    state: directory
+    owner: "op-stack"
+    group: "op-stack"
+    mode: "0775"
+  when: not geth_datadir_mounted.stat.exists
+
+- name: Put jwt token
+  ansible.builtin.copy:
+    content: "{{- op_stack_jwt_token -}}"
+    dest: /home/op-stack/jwt.txt
+    owner: "op-stack"
+    group: "op-stack"
+
+- name: Copy config files
+  ansible.builtin.template:
+    src: "{{- item -}}.j2"
+    dest: "/{{- item -}}"
+    owner: op-stack
+    group: op-stack
+    mode: '0644'
+  with_items:
+    - "home/op-stack/genesis.json"
+    - "home/op-stack/rollup.json"
+
+
+- name: Copy config files
+  ansible.builtin.template:
+    src: "{{- item -}}.j2"
+    dest: "/{{- item -}}"
+    owner: op-stack
+    group: op-stack
+    mode: '0644'
+  with_items:
+    - "home/op-stack/genesis.json"
+    - "home/op-stack/rollup.json"
+
+- name: Copy service files
+  ansible.builtin.template:
+    src: "{{- item -}}.j2"
+    dest: "/{{- item -}}"
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+    - "lib/systemd/system/op-batcher.service"
+    - "lib/systemd/system/op-geth.service"
+    - "lib/systemd/system/op-node.service"
+    - "lib/systemd/system/op-proposer.service"
+
+- name: Check if geth initialized
+  ansible.builtin.stat:
+    path: "/home/op-stack/.geth-init"
+  register: geth_initialized
+
+
+
+- name: Initialize geth
+  when: not geth_initialized.stat.exists
+  block:
+    - name: Initialize
+      become: true
+      args:
+        executable: /bin/bash
+      ansible.builtin.shell: |
+        set -e
+        /usr/bin/docker pull us-docker.pkg.dev/oplabs-tools-artifacts/images/op-geth:{{- op_stack_op_geth_version }};
+        /usr/bin/docker run \
+          --name op-geth-init \
+          --rm \
+          --network host \
+          -v /mnt/geth-data:/datadir \
+          -v /home/op-stack/genesis.json:/genesis.json \
+          -v /home/op-stack/jwt.txt:/jwt.txt \
+          us-docker.pkg.dev/oplabs-tools-artifacts/images/op-geth:{{- op_stack_op_geth_version }} \
+            init --datadir=/datadir /genesis.json;
+        echo "$(date)" > /home/op-stack/.geth-init;
+        chown op-stack:op-stack /home/op-stack/.geth-init;
+
+# TODO: Restart only when something changed
+- name: Start services
+  ansible.builtin.systemd:
+    name: "{{- item -}}"
+    state: restarted
+    enabled: true
+    daemon_reload: true
+  with_items:
+    - "op-batcher"
+    - "op-geth"
+    - "op-node"
+    - "op-proposer"
+  when: not ansible_check_mode

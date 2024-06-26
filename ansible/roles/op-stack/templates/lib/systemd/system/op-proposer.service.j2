@@ -1,0 +1,27 @@
+[Unit]
+Description=Op Geth
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=360
+Restart=always
+ExecStartPre=-/usr/bin/docker stop --time=300 op-proposer
+ExecStartPre=-/usr/bin/docker rm op-proposer
+ExecStartPre=/usr/bin/docker pull us-docker.pkg.dev/oplabs-tools-artifacts/images/op-proposer:{{- op_stack_op_proposer_version }}
+ExecStart=/usr/bin/docker run \
+    --name op-proposer \
+    --rm \
+    --network host \
+    --entrypoint op-proposer \
+    us-docker.pkg.dev/oplabs-tools-artifacts/images/op-proposer:{{- op_stack_op_proposer_version }} \
+        --poll-interval=12s \
+        --rpc.port=8560 \
+        --rollup-rpc=http://localhost:8547 \
+        --l2oo-address=0x8B2Be3a0e79bDFB076030aCC14496Baa1AE422A2 \
+        --private-key="{{- op_stack_GS_PROPOSER_PRIVATE_KEY -}}" \
+        --l1-eth-rpc="{{- op_stack_L1_RPC_URL -}}"
+
+
+[Install]
+WantedBy=multi-user.target

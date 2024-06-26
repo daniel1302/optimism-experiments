@@ -1,0 +1,12 @@
+op_stack_op_batcher_version: "v1.7.6"
+op_stack_op_geth_version: "v1.101315.2"
+op_stack_op_node_version: "v1.7.6"
+op_stack_op_proposer_version: "v1.7.6"
+op_stack_jwt_token: ""
+
+# env variables
+op_stack_L1_RPC_KIND: "erigon"
+op_stack_L1_RPC_URL: ""
+op_stack_GS_BATCHER_PRIVATE_KEY: ""
+op_stack_GS_SEQUENCER_PRIVATE_KEY: ""
+op_stack_GS_PROPOSER_PRIVATE_KEY: ""

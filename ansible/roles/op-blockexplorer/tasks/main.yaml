@@ -1,0 +1,16 @@
+---
+- name: Add the 'op-block-explorer' group
+  ansible.builtin.group:
+    name: op-block-explorer
+    state: present
+
+- name: Add the 'op-block-explorer' user
+  ansible.builtin.user:
+    name: op-block-explorer
+    shell: /bin/bash
+    groups: op-stack, sudo, docker
+
+- name: Add required packages
+  ansible.builtin.apt:
+    update_cache: "yes"
+    name:

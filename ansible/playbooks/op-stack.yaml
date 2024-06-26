@@ -1,0 +1,9 @@
+---
+- name: Run custom op-stack
+  hosts:
+    - op-stack
+  roles:
+    - role: docker
+    - role: op-stack
+  become: true
+  become_user: root

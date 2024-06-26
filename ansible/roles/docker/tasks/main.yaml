@@ -1,0 +1,40 @@
+---
+- name: Install software
+  ansible.builtin.apt:
+    update_cache: true
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+
+- name: Add apt key for required repositories
+  ansible.builtin.apt_key:
+    url: '{{ item }}'
+    state: present
+  with_items:
+    # docker
+    - https://download.docker.com/linux/ubuntu/gpg
+
+- name: Add required source repositories into sources list
+  ansible.builtin.apt_repository:
+    repo: '{{ item }}'
+    state: present
+  with_items:
+    - "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+
+- name: Install software
+  ansible.builtin.apt:
+    update_cache: true
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+
+- name: Restart docker
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: true
+    name: docker

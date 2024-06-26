@@ -1,0 +1,34 @@
+[Unit]
+Description=Op Batcher
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=360
+Restart=always
+ExecStartPre=-/usr/bin/docker stop --time=300 op-batcher
+ExecStartPre=-/usr/bin/docker rm op-batcher
+ExecStartPre=/usr/bin/docker pull us-docker.pkg.dev/oplabs-tools-artifacts/images/op-batcher:{{- op_stack_op_batcher_version }}
+ExecStart=/usr/bin/docker run \
+    --name op-batcher \
+    --rm \
+    --network host \
+    --entrypoint op-batcher \
+    us-docker.pkg.dev/oplabs-tools-artifacts/images/op-batcher:{{- op_stack_op_batcher_version }} \
+        --l2-eth-rpc=http://localhost:8545 \
+        --rollup-rpc=http://localhost:8547 \
+        --poll-interval=1s \
+        --sub-safety-margin=6 \
+        --num-confirmations=1 \
+        --safe-abort-nonce-too-low-count=3 \
+        --resubmission-timeout=30s \
+        --rpc.addr=0.0.0.0 \
+        --rpc.port=8548 \
+        --rpc.enable-admin \
+        --max-channel-duration=1 \
+        --l1-eth-rpc="{{- op_stack_L1_RPC_URL -}}" \
+        --private-key="{{- op_stack_GS_BATCHER_PRIVATE_KEY -}}"
+
+
+[Install]
+WantedBy=multi-user.target
